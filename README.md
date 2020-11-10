@@ -1,4 +1,5 @@
 # text1
+11.9
 ># 高阶函数
 - JavaScript的函数其实都指向某个变量。既然变量可以指向函数，函数的参数能接收变量，那么一个函数就可以接收另一个函数作为参数，这种函数就称之为高阶函数。
 e.g.
@@ -16,6 +17,9 @@ function add(x, y, f) {
 function pow(x) {
     return x * x;
 }
+var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+var results = arr.map(pow); // [1, 4, 9, 16, 25, 36, 49, 64, 81]
+console.log(results);
 
 ```
 e.g.小明希望利用map()把字符串变成整数，他写的代码很简洁：
@@ -79,7 +83,80 @@ https://www.cnblogs.com/qinxuemei/p/3969099.html#:~:text=parseInt%28%29%20%E5%87
 # 算法题
 ## 1.查找数字
 - 传统暴力遍历方法（java ,C++)
+   - javascript还不会创建二维数组
+- C++:建立二维数组办法
+```
+ vector<vector<int> > array;
+```
+ 二维数组行数：
+```
+ int m=array.size();
+```
+ 二维数组列数：
+ ```
+ int n=array[0].size();
+ ```
+- Java(行/列表示方法类似，建立二维数组：）
+```
+int [][] array
+```
 - 二分法（只写出来一维数组的hhh 再钻研一下）
+```
+#include<stdio.h>
+#define M 10;
+
+void main()
+{
+	static int a[10] = { -12,0,6,16,23,56,80,100,110,115 };
+	int n, low, mid, high, found,index;
+	low = 0;
+	high = M - 1;
+	found = 0;
+	mid = (high + low) / 2;
+	printf("input a number to be searched:");
+
+	index = scanf_s("%d", &n);//输入要查询数字的值,并且获得scanf的返回值用于判断输入的格式
+
+	while (index!= 1)
+	{
+		printf("the format is wrong!");
+			break;
+	}
+	while (index== 1)
+	{
+		while (low <= high)
+		{
+			mid = (low + high) / 2;
+			if (n == a[mid])
+			{
+				found = 1;
+				break;
+			}/*找到 结束循环*/
+			else if (n > a[mid])
+				low = mid + 1;
+			else
+				high = mid - 1;
+		}
+		if (found == 1)
+		{
+			printf("The index of %d is %d", n, mid);
+			break;
+		}
+		else
+		{
+			printf("There is not %d", n);
+			break;
+		}
+	}
+	}
+```
 ## 2.字符串替换
 - C++：字符串运算
+```
+c +="%20";
+```
 - js:replace函数
+```
+replace(/ /g,"%20");
+```
+   - /g作用域为全局
