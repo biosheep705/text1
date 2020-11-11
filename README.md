@@ -160,3 +160,302 @@ c +="%20";
 replace(/ /g,"%20");
 ```
    - /g作用域为全局
+   
+ >11.11
+   # 闭包
+- 把函数作为结果值返回。
+- e.g.求和
+```
+function sumall(arr){
+    var sum=function(){
+        return arr.reduce(function(x,y){
+            return x+y;
+        });
+    }
+    return sum;
+}
+```
+   - 调用sumal（）时，返回求和函数，再次调用得到求和的结果。
+
+- 返回函数不要引用任何循环变量，如果要使用，再创建一个函数，用该函数的参数绑定循环变量当前的值：
+```
+function count() {
+    var arr = [];
+    for (var i=1; i<=3; i++) {
+        arr.push((function (n) {
+            return function () {
+                return n * n;
+            }
+        })(i));
+    }
+    return arr;
+}
+```
+- 创造一个匿名函数并立即执行：
+```
+(function (x) {
+    return x * x;
+})(3); // 9
+```
+
+# 箭头函数
+- 类似匿名函数
+```
+var fn = x => x * x;
+```
+- 多语句恰当使用{...}和return
+```
+x => {
+    if (x > 0) {
+        return x * x;
+    }
+    else {
+        return - x * x;
+    }
+}
+```
+# Treenode
+
+## 1.定义
+```
+
+struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+};
+```
+- 包括
+- 1.本节点所存储的值
+- 2.左孩子节点的指针
+- 3.右孩子节点的指针
+   - 子节点必须使用指针
+   - 节点必须**使用地址**的方式存在在结构体当中
+      - 一级指针就是一个节点的地址，二级指针存放的节点地址的地址。通过一级指针可以找到一个节点（包括值和左右），二级指针可以找到节点。函数中需要递归的方式构建整个树，其中每次构建一个节点的时候其实获得到的是一级指针。这个指针的值是系统分配我们无法决定，然后需要把根的左右节点的值指向构建的新的子树，为了调用方法返回后依然能够保留指针的位置，所以需要二级节点.
+- 如果需要重新定义结构体的名字，使用typedef方法
+```
+typedef struct TreeNode {
+	int val;
+	struct TreeNode *left;
+	struct TreeNode *right;
+} BiNode, *BiTree;
+```
+
+## 递归的特点
+>两个显著的特征
+- 终止条件
+   - 递归必须有一个终止的条件，即不能无限循环地调用本身
+- 自身调用
+   - 原问题可以分解为子问题，子问题和原问题的求解方法是一致的，即都是调用自身的同一个函数
+
+e.g.
+```
+public int sum(int n) { 
+    if (n <= 1) { 
+        return 1; 
+    }  
+    return sum(n - 1) + n;  
+} 
+```
+## 遍历
+- 二叉树的前序遍历：根左右
+- 二叉树的中序遍历：左根右
+- 二叉树的的后序遍历：左右根
+
+## malloc函数
+- #include<stdlib.h>
+
+- 在内存中找一片指定大小的空间，然后将这个空间的首地址给一个指针变量，这里的指针变量可以是一个单独的指针，也可以是一个数组的首地址。
+```
+  int *p;
+
+  p = (int *)malloc(sizeof(int));
+```
+   - 实参：sizeof(int)
+
+>### new
+-  返回指定类型的指针
+-  **自动计算所需要的大小**。
+```
+int *p;
+
+p = new int;   //返回类型为int *类型，分配的大小为sizeof(int)
+
+p = new int[100]; //返回类型为int *类型，分配的大小为sizeof(int) * 100
+    
+```
+>### malloc
+- 人工计算字节数 
+- 返回的时候强转成void*
+
+>## BiTree T与BiTree &T
+
+- Bitree T 
+   - 定义Bitree一个实例对象T;
+- Bitree *T 
+   - 定义Bitree的实例对象指针,指向一个实例对象
+- Bitree &T 
+   - 定义Bitree的实例对象的引用,就是一个已经定义的对象的别名,需要初始化;
+```
+Bitree T;
+Bitree &T = T;
+Bitree *T = &T; //&是取地址.
+```
+>## 箭头运算符
+- 传入参数是结构体
+- 需要该结构体作为返回值
+- 对结构体赋值
+>## C实现
+
+```
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct BiTNode
+{
+    char data;
+    struct BiTNode* lchild, * rchild;   //创建二叉树
+}BiTNode, * BiTree;
+void PreOrderTraverse(BiTree T)//二叉树的先序遍历
+{
+    if (T == NULL)
+        return;
+    printf("%c ", T->data);
+    PreOrderTraverse(T->lchild);
+    PreOrderTraverse(T->rchild);
+}
+void InOrderTraverse(BiTree T)//二叉树的中序遍历
+{
+    if (T == NULL)
+        return;
+    InOrderTraverse(T->lchild);
+    printf("%c ", T->data);
+    InOrderTraverse(T->rchild);
+}
+void PostOrderTraverse(BiTree T)//后序遍历
+{
+    if (T == NULL)
+        return;
+    PostOrderTraverse(T->lchild);
+    PostOrderTraverse(T->rchild);
+    printf("%c ", T->data);
+}
+void CreateBiTree(BiTree* T)
+{
+    char ch;
+    scanf_s("%c", &ch);
+    if (ch == '#')
+        *T = NULL;
+    else
+    {
+        *T = (BiTree)malloc(sizeof(BiTNode));
+        if (!*T)
+            exit(-1);
+        (*T)->data = ch;
+        CreateBiTree(&(*T)->lchild);
+        CreateBiTree(&(*T)->rchild);
+    }
+}
+int main()
+{
+    BiTree T;
+    printf("请给二叉树按照先序方式依次输入结点的值(空结点为#):\n");
+    //例子：AB#D##C##
+    CreateBiTree(&T);
+    printf("先序方式遍历结果：\n");
+    PreOrderTraverse(T);
+    printf("中序方式遍历结果：\n");
+    InOrderTraverse(T);
+    printf("后序方式遍历结果：\n");
+    PostOrderTraverse(T);
+    return 0;
+}
+```
+>## JS实现
+- new运算符：
+   - 创建一个定义的对象类型的实例
+   - 创建一个具有构造函数的内置对象的实例
+
+- shift函数
+   - 把数组的第一个元素从其中删除，返回第一个元素的值
+   - 不创建新数组
+```
+function TreeNode(val){
+    this.val=val;
+    this.left=null;
+    this.right=null;
+}
+```
+
+//根据二叉树的层次遍历的序列结果，创建二叉树
+```
+function createTree_levelOrder(levelOrderArr) {
+    let queue=[];
+    let root=null;
+
+    if(levelOrderArr[0]!==undefined){
+```
+        //1、找到根节点，将根节点加入到队列（层次遍历结果序列的第一个一定是根节点）
+```
+        let nodeVal=levelOrderArr.shift();
+        root=new TreeNode(nodeVal);
+        queue.push(root);
+```
+        //2、循环的将队列队首的元素出队，把和出队元素相关的元素加入到队列（循环中的元素为空，循环就运行完了）
+
+        //队列不为空
+        
+```
+        while(queue.length){
+            //1、将队列队首的元素出队（要么是整棵树的根节点、要么是子树的根节点）
+            let head= queue.shift();
+            //2、把和出队元素相关的元素加入到队列（先创建节点，根节点的左右孩子）
+            //a、创建左节点，将它加入到队列
+            nodeVal=levelOrderArr.shift();
+            if(nodeVal!='#'){
+                head.left=new TreeNode(nodeVal);
+                queue.push(head.left);
+            }
+
+            //b、创建右节点，将它加入到队列
+            nodeVal=levelOrderArr.shift();
+            if(nodeVal!='#'){
+                head.right=new TreeNode(nodeVal);
+                queue.push(head.right);
+            }
+        }
+    }
+
+    return root;
+}
+```
+## 根据先序遍历和中序遍历重建二叉树
+- 递归
+   -  i:
+      - 根节点在中序遍历结果的下标
+      - 当前左子树的节点个数
+```
+function reConstructBinaryTree(pre, vin)
+{
+if(!pre.length||!vin.length){
+    return null;
+}
+    var rootVal=pre[0];
+    var root=new TreeNode(rootVal);
+    
+    let i=0;
+    for(;i<vin.length;++i){
+        if(vin[i]===rootVal){
+            break;
+        }
+    }
+    root.left=reConstructBinaryTree(pre.slice(1,i+1),vin.slice(0,i));
+    root.right=reConstructBinaryTree(pre.slice(i+1),vin.slice(i+1));
+    return root;
+}
+```
+
+
+### 参考资料
+- https://blog.csdn.net/qq_40551367/article/details/90705080?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param
+
+- https://blog.csdn.net/zhanggonglalala/article/details/79738213?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param
