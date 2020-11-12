@@ -459,3 +459,129 @@ if(!pre.length||!vin.length){
 - https://blog.csdn.net/qq_40551367/article/details/90705080?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param
 
 - https://blog.csdn.net/zhanggonglalala/article/details/79738213?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param
+
+11.12
+# 原型对象和原型链
+
+## 对象
+
+- 普通对象
+
+  - Object
+
+- 函数对象
+
+  - new Function
+
+  - 每创建一个函数对象，对象中会有一些内置属性
+
+    - prototype
+
+      - 继承
+
+    - _proto_
+
+      - 引用父类的prototype对象
+
+```javascript
+function f() {}
+f.prototype.foo = "abc";
+varobj = newf();
+console.log(obj.foo); // abc
+```
+
+- obj中__proto__保存的是 f 的 prototype
+
+- f.prototype 的 __proto__ 中保存的是 Object.prototype
+
+- Object.prototype.__proto__ 是 null，表示 obj 对象原型链的**终结**
+
+>原型链：
+
+- obj 对象拥有一个原型链以后，当 obj.foo 执行时，obj 会先查找自身是否有该属性，但不会查找自己的 prototype，当找不到foo时，obj 就沿着原型链依次去查找.
+
+### new
+
+``` javascript
+function Animal(name){
+        this.name = name;
+    }
+    Animal.color = "black";
+    Animal.prototype.say = function(){
+        console.log("I'm " + this.name);
+    };
+    var cat = new Animal("cat");
+
+    console.log(
+       cat.name,  //cat
+       cat.height //undefined
+    );
+    cat.say(); //I'm cat
+
+    console.log(
+       Animal.name, //Animal
+       Animal.color //back
+    );
+```
+
+```javascript
+var cat = new Animal("cat");
+```
+
+- 用伪代码模拟其工作流程:
+
+```javascript
+new Animal("cat") = {
+
+    var obj = {};
+
+    obj.__proto__ = Animal.prototype;
+
+    var result = Animal.call(obj,"cat");
+
+    return typeof result === 'object'? result : obj;
+}
+```
+
+（1）创建一个空对象obj;
+
+（2）把obj的__proto__ 指向Animal的原型对象prototype，此时便建立了obj对象的原型链：obj->Animal.prototype->Object.prototype->null
+
+（3）在obj对象的执行环境调用Animal函数并传递参数“cat”。 相当于var result = obj.Animal("cat")。
+
+- 当这句执行完之后，obj便产生了属性name并赋值为"cat"。
+
+（4）考察第3步返回的返回值，如果无返回值或者返回一个非对象值，则将obj返回作为新对象；否则会将返回值作为新对象返回。
+
+## Date
+
+```javascript
+var now = new Date();
+now; // Wed Jun 24 2015 19:49:22 GMT+0800 (CST)
+```
+
+- 注意JavaScript的月份范围用整数表示是0~11
+
+```javascript
+var d = new Date(2015, 5, 19, 20, 15, 30, 123);
+d; // Fri Jun 19 2015 20:15:30 GMT+0800 (CST)
+```
+
+廖雪峰应景练习：
+
+```javascript
+var today = new Date(2020,2,14);
+if (today.getMonth() === 2 && today.getDate() === 14) {
+    alert('亲爱的，我预定了晚餐，晚上6点在餐厅见！');
+}
+else
+alert('亲爱的，我们分手吧，我先滚为敬！');
+```
+
+> 计算在一个 32 位的整数的二进制表示中有多少个1
+
+
+- n&n-1(只需要循环1的个数次)
+
+- n&1（需要循环32次）
+
