@@ -70,15 +70,35 @@ document.write(str.substring(3,7))
 lo w
 ```
 
->## parseFloat() 函数和parseInt()函数
-资料参考：
-https://www.cnblogs.com/qinxuemei/p/3969099.html#:~:text=parseInt%28%29%20%E5%87%BD%E6%95%B0%20%E5%AE%9A%E4%B9%89%E5%92%8C%E7%94%A8%E6%B3%95%20parseInt%28%29%20%E5%87%BD%E6%95%B0%E5%8F%AF%E8%A7%A3%E6%9E%90%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E6%95%B4%E6%95%B0%E3%80%82%20%E8%AF%AD%E6%B3%95%20parseInt%28string%2C%20radix%29,2%20~%2036%20%E4%B9%8B%E9%97%B4%E3%80%82%20%E5%A6%82%E6%9E%9C%E7%9C%81%E7%95%A5%E8%AF%A5%E5%8F%82%E6%95%B0%E6%88%96%E5%85%B6%E5%80%BC%E4%B8%BA%200%EF%BC%8C%E5%88%99%E6%95%B0%E5%AD%97%E5%B0%86%E4%BB%A5%2010%20%E4%B8%BA%E5%9F%BA%E7%A1%80%E6%9D%A5
+## parseFloat() 函数和parseInt()函数
+
+[资料参考](https://www.cnblogs.com/qinxuemei/p/3969099.html#:~:text=parseInt%28%29%20%E5%87%BD%E6%95%B0%20%E5%AE%9A%E4%B9%89%E5%92%8C%E7%94%A8%E6%B3%95%20parseInt%28%29%20%E5%87%BD%E6%95%B0%E5%8F%AF%E8%A7%A3%E6%9E%90%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E6%95%B4%E6%95%B0%E3%80%82%20%E8%AF%AD%E6%B3%95%20parseInt%28string%2C%20radix%29,2%20~%2036%20%E4%B9%8B%E9%97%B4%E3%80%82%20%E5%A6%82%E6%9E%9C%E7%9C%81%E7%95%A5%E8%AF%A5%E5%8F%82%E6%95%B0%E6%88%96%E5%85%B6%E5%80%BC%E4%B8%BA%200%EF%BC%8C%E5%88%99%E6%95%B0%E5%AD%97%E5%B0%86%E4%BB%A5%2010%20%E4%B8%BA%E5%9F%BA%E7%A1%80%E6%9D%A5)
 
 ## filter
 
 - filter也是一个常用的操作，它用于把Array的某些元素过滤掉，然后返回剩下的元素。
 
 - 和map()类似，Array的filter()也接收一个函数。和map()不同的是，filter()把传入的函数依次作用于每个元素，然后**根据返回值是true还是false**决定保留还是丢弃该元素。
+
+## filter去重：(利用回调函数)
+
+```javascript
+var arr=['A','B','A'];
+var r;
+r=arr.filter(function(element,index,self){
+    return self.indexOf(element)===index;
+});
+```
+
+- 回调函数的参数：
+
+  - 第一个参数，表示Array的某个元素
+
+  - 第二个参数，表示元素的位置
+
+  - 第三个参数，数组本身
+
+>indexOf总是返回第一个元素的位置，后续的重复元素位置与indexOf返回的位置不相等，因此被filter滤掉了。
 
 # 算法题
 ## 1.查找数字
@@ -585,3 +605,230 @@ alert('亲爱的，我们分手吧，我先滚为敬！');
 
 - n&1（需要循环32次）
 
+11.13
+
+## RegExp
+
+- 正则表达式
+
+- 两种写法:
+
+```javascript
+var re1 = /ABC\-001/;
+var re2 = new RegExp('ABC\\-001');
+
+re1; // /ABC\-001/
+re2; // /ABC\-001/
+```
+
+- 第二种写法中字符串的两个\\实际上是一个\。
+
+  - test方法
+
+  - 测试给定的字符串是否符合条件
+
+```javascript
+var re = /^\d{3}\-\d{3,8}$/;
+re.test('010-12345'); // true
+re.test('010-1234x'); // false
+re.test('010 12345'); // false
+```
+
+- 匹配规则：
+
+1.\d匹配一个数字，\d{n}匹配n个数字
+
+2.\w可以匹配一个字母或数字
+
+3.用[]表示范围
+
+- [0-9a-zA-Z\_]为一个数字、字母或者下划线
+
+- [0-9a-zA-Z\_]+为至少由一个数字、字母或者下划线组成的**字符串**
+
+- A|B为A或B
+
+- ^为行的开头，^\d表示必须以数字开头。
+
+- $为行的结束，\d$表示以数字结束。
+
+- \s为一个空格，\s+为至少有一个空格
+
+>正则匹配默认是贪婪匹配，即匹配尽可能多的字符，若要避免此种情况，可：
+
+```javascript
+var re = /^(\d+)(0*)$/;
+re.exec('102300'); // ['102300', '102300', '']
+var re = /^(\d+?)(0*)$/;
+re.exec('102300'); // ['102300', '1023', '00']
+```
+
+## 切分字符串
+
+```javascript
+'a,b, c  d'.split(/[\s\,]+/); // ['a', 'b', 'c', 'd']
+'a,b;; c  d'.split(/[\s\,\;]+/); // ['a', 'b', 'c', 'd']
+```
+
+- 使用正则表达式识别用户不规范的输入。
+
+## 分组
+
+- ()表示要提取的分组。
+
+```javascript
+var re = /^(\d{3})-(\d{3,8})$/;
+re.exec('010-12345'); // ['010-12345', '010', '12345']
+```
+
+- exec()
+
+  - 返回一个Array，第一个元素是正则表达式匹配到的整个字符串，后面的字符串表示匹配成功的子串。
+  
+  - 失败返回null
+
+## 全局搜索
+
+- g：全局匹配
+
+```javascript
+var sti="Hello  world!";//将字符串里的空格换为%20
+sti.replace(/ /g,"%20");
+
+var s = 'JavaScript, VBScript, JScript and ECMAScript';
+var re=/[a-zA-Z]+Script/g;
+
+re.exec(s); // ['JavaScript']
+re.lastIndex; // 10
+
+re.exec(s); // ['VBScript']
+re.lastIndex; // 20
+
+re.exec(s); // ['JScript']
+re.lastIndex; // 29
+
+re.exec(s); // ['ECMAScript']
+re.lastIndex; // 44
+
+re.exec(s); // null，直到结束仍没有匹配到
+```
+
+- 不能使用/^...$/，该方法只会最多匹配一次。
+
+>高阶函数补充
+
+## trim
+
+- trim() 方法用于删除字符串的头尾空白符，空白符包括：**空格、制表符 tab、换行符等其他空白符**等。
+
+- trim() 方法不改变原始字符串。
+
+- trim() 方法**不适用于 null, undefined, Number**类型。
+
+## rand&srand
+
+- 随机生成1-100内数字:
+
+```javascript
+srand(time(0));//初始化随机数发生器
+ num = rand() % (MAX - MIN) + MIN;//生成MIN到MAX之间的随机数
+```
+
+## sort
+
+- 排序
+
+  - Array的sort()方法默认把所有元素先转换为**String**再排序
+
+    - 例如大小写的ASCII不同
+
+## every
+
+- 判断所有元素是否满足条件
+
+## find
+
+- 查找符合条件的第一个元素,返回该元素/-1
+
+## findIndex
+
+- 查找符合条件的第一个元素,返回该元素的索引/-1
+
+## forEach
+
+- 把每个元素作用于传入的函数
+- 不返回新的数组
+- 无返回值。
+
+## unshift方法
+
+- 向数组的开头添加一个或更多元素，并返回新的长度。
+
+```javascript
+arrayObject.unshift(newelement1,newelement2,....,newelementX);
+```
+
+- 返回:arrayObject 的新长度
+
+- 修改原有数组，第一个参数成为数组的新元素 0，第二个参数成为新的元素 1...
+
+## shift
+
+- 把数组的第一个元素从其中删除，并返回第一个元素的值。
+
+## generator
+
+- 多次返回
+
+- 可以记住执行状态的函数
+
+```javascript
+function* fib(max) {
+    var
+        t,
+        a = 0,
+        b = 1,
+        n = 0;
+    while (n < max) {
+        yield a;
+        [a, b] = [b, a + b];
+        n ++;
+    }
+    return;
+}
+```
+
+调用
+
+- 1.next()方法
+
+```javascript
+var f = fib(5);
+f.next(); // {value: 0, done: false}
+f.next(); // {value: 1, done: false}
+f.next(); // {value: 1, done: false}
+f.next(); // {value: 2, done: false}
+f.next(); // {value: 3, done: false}
+f.next(); // {value: undefined, done: true}
+```
+
+- 执行到done为true时，generator对象执行完毕
+- for ... of循环
+
+```javascript
+'use strict'
+
+function* fib(max) {
+    var
+        t,
+        a = 0,
+        b = 1,
+        n = 0;
+    while (n < max) {
+        yield a;
+        [a, b] = [b, a + b];
+        n ++;
+    }
+    return;
+}
+```
