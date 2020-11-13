@@ -506,7 +506,7 @@ if(!pre.length||!vin.length){
 ```javascript
 function f() {}
 f.prototype.foo = "abc";
-varobj = newf();
+var obj = new f();
 console.log(obj.foo); // abc
 ```
 
@@ -520,7 +520,7 @@ console.log(obj.foo); // abc
 
 - obj 对象拥有一个原型链以后，当 obj.foo 执行时，obj 会先查找自身是否有该属性，但不会查找自己的 prototype，当找不到foo时，obj 就沿着原型链依次去查找.
 
-### new
+## new
 
 ``` javascript
 function Animal(name){
