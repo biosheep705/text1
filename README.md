@@ -832,3 +832,109 @@ function* fib(max) {
     return;
 }
 ```
+
+11.15
+
+# React
+
+## React组件
+
+- 接收参数（props）
+
+- render方法
+
+  - 返回视图的层次结构（React元素）
+
+- state
+
+  - 存储组件的状态（私有属性）
+
+- setState
+
+  - 重新调用 render 方法并渲染
+
+  - 接受一个对象或者函数作为参数。
+
+  - 传入需要更新的部分
+
+```javascript
+...
+  constructor (props) {
+    super(props)
+    this.state = {
+      name: 'Tomy',
+      isLiked: false
+    }
+  }
+
+  handleClickOnLikeButton () {
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+...
+```
+
+isliked已经发生了改变.
+
+- 存在延迟
+
+- 调用 setState 的时候，这个对象将会被放到一个更新队列里，稍后才会从队列当中把新的状态提取出来合并到 state 当中，然后再触发组件更新。
+
+```javascript
+  handleClickOnLikeButton () {
+    this.setState({ count: 0 }) // => this.state.count 还是 undefined
+    this.setState({ count: this.state.count + 1}) // => undefined + 1 = NaN
+    this.setState({ count: this.state.count + 2}) // => NaN + 2 = NaN
+  }
+```
+
+- 解决方法：传入函数作为参数
+
+```javascript
+handleClickOnLikeButton () {
+    this.setState((prevState) => {
+      return { count: 0 }
+    })
+    this.setState((prevState) => {
+      return { count: prevState.count + 1 } // 上一个 setState 的返回是 count 为 0，当前返回 1
+    })
+    this.setState((prevState) => {
+      return { count: prevState.count + 2 } // 上一个 setState 的返回是 count 为 1，当前返回 3
+    })
+    // 最后的结果是 this.state.count 为 3
+```
+
+- 上述过程中组件只会重新渲染**一次**，由于React.js内部会把Javascript事件循环中的消息队列的同一个消息中的setState进行合并后再重新渲染组件。
+
+## slice办法
+
+- 从已有的数组中返回选定的元素
+
+```javascript
+arrayObject.slice(start,end)
+```
+
+- start:必需，从何处开始选取。
+
+  - 如果是负数，如-1 指最后一个元素，-2 指倒数第二个元素。
+
+- end：不是必需，规定从何处结束选取。
+  
+## super方法
+
+- 定义class子类的构造函数
+
+- 构造函数以 super(props)
+
+```javascript
+class Square extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+```
+1.还没摸清怎么插入图片，所以第四项做完了没法上传
+2.由于第一次看react教程完全跟着一步一步走，没有太理清楚，11.16号准备再看一遍，是以第一遍的笔记比较简陋。
